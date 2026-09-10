@@ -7,9 +7,11 @@ import com.udea.lab12026p.repository.CustomerRepository;
 import com.udea.lab12026p.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 @Service
 public class TransactionService {
 
@@ -19,7 +21,21 @@ public class TransactionService {
     @Autowired
     private CustomerRepository customerRepository; // Para validar cuentas
 
+    @Transactional
     public TransactionDTO transferMoney(TransactionDTO transactionDTO) {
+        String origen = transactionDTO.getSenderAccountNumber();
+        String destino = transactionDTO.getReceiverAccountNumber();
+        Double monto = transactionDTO.getAmount();
+
+        if (origen == null || origen.isBlank() || destino == null || destino.isBlank()) {
+            throw new IllegalArgumentException("Debes indicar las dos cuentas.");
+        }
+        if (origen.equals(destino)) {
+            throw new IllegalArgumentException("La cuenta de origen y la de destino deben ser diferentes.");
+        }
+        if (monto == null || !Double.isFinite(monto) || monto <= 0) {
+            throw new IllegalArgumentException("El monto debe ser un número positivo.");
+        }
         // Validar que los números de cuenta no sean nulos
         if (transactionDTO.getSenderAccountNumber() == null || transactionDTO.getReceiverAccountNumber() == null) {
             throw new IllegalArgumentException("Los números de cuenta del remitente y receptor son obligatorios.");
@@ -51,7 +67,7 @@ public class TransactionService {
         transaction.setSenderAccountNumber(sender.getAccountNumber());
         transaction.setReceiverAccountNumber(receiver.getAccountNumber());
         transaction.setAmount(transactionDTO.getAmount());
-        transaction.setTimestamp(transactionDTO.getTimestamp());
+        transaction.setTimestamp(LocalDateTime.now());
 
         transaction = transactionRepository.save(transaction);
 
