@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name="transaction")
+@Table(name="transactions")
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +23,8 @@ public class Transaction {
     @Column(nullable = false)
     private Double amount;
 
-    // @Column(nullable = false)
-     private LocalDateTime timestamp = LocalDateTime.now();
+    @Column(nullable = false)
+    private LocalDateTime timestamp = LocalDateTime.now();
 
 
     public Transaction() {

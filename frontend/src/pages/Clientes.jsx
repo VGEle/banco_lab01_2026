@@ -19,7 +19,7 @@ export default function Clientes() {
         try {
             const data = await listarClientes();
             setClientes(data);
-        } catch (err) {
+        } catch {
             setError('No fue posible consultar los clientes.');
         } finally {
             setCargando(false);
@@ -28,7 +28,10 @@ export default function Clientes() {
 
     // Llamar a la función al abrir la vista
     useEffect(() => {
-        cargarClientes();
+        listarClientes()
+            .then(data => setClientes(data))
+            .catch(() => setError('No fue posible consultar los clientes.'))
+            .finally(() => setCargando(false));
     }, []);
 
     // Manejar la creación del cliente
@@ -62,7 +65,7 @@ export default function Clientes() {
             setAccountNumber('');
             setBalance('');
             await cargarClientes();
-        } catch (err) {
+        } catch {
             alert('Error al crear el cliente en el servidor.');
         }
     };
