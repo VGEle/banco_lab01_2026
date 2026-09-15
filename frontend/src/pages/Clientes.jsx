@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
-import { listarClientes, crearCliente } from '../api/banco';
+import {
+    listarClientes,
+    crearCliente,
+    actualizarCliente,
+    eliminarCliente,
+} from '../api/banco';
 
 export default function Clientes() {
     const [clientes, setClientes] = useState([]);
@@ -11,6 +16,7 @@ export default function Clientes() {
     const [lastName, setLastName] = useState('');
     const [accountNumber, setAccountNumber] = useState('');
     const [balance, setBalance] = useState('');
+    const [clienteEditando, setClienteEditando] = useState(null);
 
     // Función para cargar los clientes desde el backend
     const cargarClientes = async () => {
@@ -52,21 +58,58 @@ export default function Clientes() {
         }
 
         try {
-            await crearCliente({
+            const datos = {
                 firstName,
                 lastName,
                 accountNumber,
                 balance: parsedBalance
-            });
+            };
+
+            if (clienteEditando) {
+                await actualizarCliente(clienteEditando.id, datos);
+            } else {
+                await crearCliente(datos);
+            }
 
             // Limpiar formulario y volver a consultar la lista
-            setFirstName('');
-            setLastName('');
-            setAccountNumber('');
-            setBalance('');
+            limpiarFormulario();
             await cargarClientes();
         } catch {
-            alert('Error al crear el cliente en el servidor.');
+            alert(clienteEditando
+                ? 'Error al actualizar el cliente en el servidor.'
+                : 'Error al crear el cliente en el servidor.');
+        }
+    };
+
+    const limpiarFormulario = () => {
+        setFirstName('');
+        setLastName('');
+        setAccountNumber('');
+        setBalance('');
+        setClienteEditando(null);
+    };
+
+    const iniciarEdicion = (cliente) => {
+        setClienteEditando(cliente);
+        setFirstName(cliente.firstName);
+        setLastName(cliente.lastName);
+        setAccountNumber(cliente.accountNumber);
+        setBalance(String(cliente.balance));
+    };
+
+    const handleDelete = async (id) => {
+        if (!window.confirm('¿Deseas eliminar este cliente?')) {
+            return;
+        }
+
+        try {
+            await eliminarCliente(id);
+            if (clienteEditando?.id === id) {
+                limpiarFormulario();
+            }
+            await cargarClientes();
+        } catch {
+            alert('No fue posible eliminar el cliente.');
         }
     };
 
@@ -104,7 +147,14 @@ export default function Clientes() {
                     value={balance}
                     onChange={(e) => setBalance(e.target.value)}
                 />
-                <button type="submit">Crear Cliente</button>
+                <button type="submit">
+                    {clienteEditando ? 'Guardar cambios' : 'Crear Cliente'}
+                </button>
+                {clienteEditando && (
+                    <button type="button" onClick={limpiarFormulario}>
+                        Cancelar
+                    </button>
+                )}
             </form>
 
             {/* Tabla de clientes o mensaje si está vacía */}
@@ -119,6 +169,7 @@ export default function Clientes() {
                         <th>Apellido</th>
                         <th>Cuenta</th>
                         <th>Saldo</th>
+                        <th>Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -129,6 +180,14 @@ export default function Clientes() {
                             <td>{cliente.lastName}</td>
                             <td>{cliente.accountNumber}</td>
                             <td>{cliente.balance}</td>
+                            <td>
+                                <button type="button" onClick={() => iniciarEdicion(cliente)}>
+                                    Editar
+                                </button>{' '}
+                                <button type="button" onClick={() => handleDelete(cliente.id)}>
+                                    Eliminar
+                                </button>
+                            </td>
                         </tr>
                     ))}
                     </tbody>

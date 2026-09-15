@@ -1,124 +1,135 @@
-# Aplicación Banco — Laboratorio 01 de Arquitectura de Software
+# Informe de Laboratorio 1: Introducción a Spring Boot
 
-Aplicación web full stack para administrar clientes bancarios, realizar transferencias entre cuentas y consultar el historial de movimientos. El proyecto combina una API REST construida con Spring Boot, una interfaz en React y persistencia en MySQL.
+## Introducción
 
-## Funcionalidades
+Este proyecto implementa una aplicación web bancaria para administrar clientes, cuentas y transferencias de dinero. La solución está compuesta por un backend desarrollado con Spring Boot, un frontend desarrollado con React y una base de datos MySQL.
 
-- Crear clientes con nombre, apellido, número de cuenta y saldo inicial.
-- Consultar todos los clientes registrados y sus saldos.
-- Transferir dinero entre dos cuentas existentes.
-- Validar montos, cuentas diferentes y saldo suficiente antes de cada transferencia.
-- Consultar los movimientos de una cuenta, identificando entradas y salidas.
+La aplicación permite crear, consultar, actualizar y eliminar clientes, realizar transferencias entre cuentas y consultar el historial de movimientos asociado a cada cuenta.
 
+## Objetivos
 
-## Arquitectura
+### Objetivo general
 
-```mermaid
-flowchart LR
-    UI[React + Vite<br/>localhost:5173]
-    API[Spring Boot REST API<br/>localhost:8080]
-    DB[(MySQL<br/>lab12026p)]
+Desarrollar una aplicación web full stack que simule las operaciones básicas de un banco utilizando Spring Boot, React, Axios y MySQL.
 
-    UI -->|Proxy /api| API
-    API -->|Spring Data JPA| DB
-```
+### Objetivos específicos
 
-El backend sigue una arquitectura por capas:
+- Implementar una API REST con Spring Boot.
+- Persistir clientes, saldos y transacciones en MySQL.
+- Organizar el backend mediante una arquitectura por capas.
+- Aplicar DTOs y mappers para separar los contratos de la API de las entidades persistentes.
+- Validar los datos de entrada y las reglas de negocio de las transferencias.
+- Construir un frontend React con las vistas de clientes, transferencias e historial.
+- Integrar el frontend y el backend mediante Axios y el proxy de Vite.
 
-- **Controllers:** exponen los endpoints HTTP.
-- **Services:** contienen las reglas de negocio y el manejo transaccional.
-- **Repositories:** gestionan el acceso a datos con Spring Data JPA.
-- **Entities y DTOs:** representan la información persistida y los contratos de la API.
-- **Mappers:** convierten entidades y DTOs mediante MapStruct.
+## Herramientas de software empleadas
 
-## Tecnologías
+- IntelliJ IDEA para el desarrollo del backend.
+- Visual Studio Code para el desarrollo del frontend.
+- Java 17 y Spring Boot 3.5.11.
+- Maven Wrapper para la construcción y ejecución del backend.
+- Spring Web para la creación de la API REST.
+- Spring Data JPA e Hibernate para la persistencia.
+- MySQL como sistema gestor de base de datos.
+- React 19.2.8 para la interfaz de usuario.
+- Vite 8.2.2 como herramienta de desarrollo y construcción del frontend.
+- Axios para las solicitudes HTTP.
+- Lombok para reducir código repetitivo.
+- MapStruct para convertir entidades y DTOs.
+- Bean Validation para validar los datos recibidos por la API.
+- Git y GitHub para el control de versiones.
 
-| Componente | Tecnología |
-| --- | --- |
-| Backend | Java 17, Spring Boot 3.5.11, Spring Web |
-| Persistencia | Spring Data JPA, Hibernate, MySQL |
-| Mapeo | MapStruct 1.5.5.Final |
-| Frontend | React 19, Vite 8, Axios |
-| Construcción | Maven Wrapper, npm |
-| Pruebas | JUnit 5, Spring Boot Test |
+## Arquitectura propuesta
 
-## Estructura del proyecto
+La aplicación utiliza una arquitectura por capas. Cada capa tiene una responsabilidad específica:
 
 ```text
-.
-├── src/
-│   ├── main/java/com/udea/lab12026p/
-│   │   ├── controller/     # Endpoints REST
-│   │   ├── dto/            # Objetos de transferencia de datos
-│   │   ├── entity/         # Entidades JPA
-│   │   ├── mapper/         # Conversión entre entidades y DTOs
-│   │   ├── repository/     # Acceso a MySQL
-│   │   └── service/        # Lógica de negocio
-│   ├── main/resources/     # Configuración de Spring Boot
-│   └── test/               # Pruebas del backend
-├── frontend/
-│   ├── src/api/            # Cliente HTTP
-│   ├── src/pages/          # Clientes, transferencias e historial
-│   └── package.json
-├── pom.xml
-└── mvnw
+Frontend React
+      │ Axios / proxy /api
+      ▼
+Controladores REST
+      ▼
+Servicios y reglas de negocio
+      ▼
+Repositorios Spring Data JPA
+      ▼
+Base de datos MySQL
 ```
 
-## Requisitos previos
+### Capas del backend
 
-- Java 17.
-- MySQL 8.
-- Node.js `20.19+`, `22.12+` o una versión posterior compatible con Vite 8.
-- npm.
+- **Controller:** recibe las solicitudes HTTP y devuelve las respuestas de la API.
+- **Service:** contiene la lógica de negocio, las validaciones y la operación transaccional de las transferencias.
+- **Repository:** proporciona el acceso a las tablas mediante Spring Data JPA.
+- **Entity:** representa las tablas `customers` y `transactions`.
+- **DTO:** define los datos que se reciben y se envían mediante la API.
+- **Mapper:** convierte entidades en DTOs y DTOs en entidades mediante MapStruct.
 
-No es necesario instalar Maven globalmente porque el proyecto incluye Maven Wrapper.
+El frontend está organizado en componentes y vistas independientes para clientes, transferencias e historial. Vite redirige las solicitudes `/api` hacia el backend que se ejecuta en el puerto 8080.
 
-## Configuración de la base de datos
+## Procedimiento
 
-La aplicación utiliza la base de datos `lab12026p` y el usuario `lab_user`. Desde MySQL, crea ambos con:
+### 1. Configuración de la base de datos
 
-```sql
-CREATE DATABASE IF NOT EXISTS lab12026p;
-CREATE USER IF NOT EXISTS 'lab_user'@'localhost' IDENTIFIED BY 'tu_contrasena';
-GRANT ALL PRIVILEGES ON lab12026p.* TO 'lab_user'@'localhost';
-FLUSH PRIVILEGES;
-```
+Se creó la base de datos `lab12026p` y el usuario específico `lab_user`. La configuración de conexión se encuentra en `src/main/resources/application.properties`.
 
-La contraseña no se guarda en el repositorio. Antes de iniciar el backend, define la variable de entorno `DB_PASSWORD` con la misma contraseña:
+La contraseña se proporciona mediante la variable de entorno `DB_PASSWORD`, evitando guardarla directamente en el repositorio. Hibernate utiliza `ddl-auto=update` para crear o actualizar las tablas sin eliminar los datos existentes.
+
+### 2. Desarrollo del backend
+
+Se implementaron las entidades `Customer` y `Transaction`, junto con sus respectivos repositorios, DTOs, mappers, servicios y controladores.
+
+La transferencia de dinero se ejecuta dentro de una operación `@Transactional`. Antes de guardar la transacción se verifica que:
+
+- Las dos cuentas hayan sido indicadas.
+- Las cuentas de origen y destino sean diferentes.
+- El monto sea positivo y válido.
+- Ambas cuentas existan.
+- La cuenta de origen tenga saldo suficiente.
+
+Si ocurre un error, la operación se revierte para evitar saldos inconsistentes.
+
+### 3. Endpoints implementados
+
+#### Clientes
+
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| GET | `/api/customers` | Lista todos los clientes. |
+| GET | `/api/customers/{id}` | Consulta un cliente por ID. |
+| POST | `/api/customers` | Crea un cliente. |
+| PUT | `/api/customers/{id}` | Actualiza un cliente. |
+| DELETE | `/api/customers/{id}` | Elimina un cliente. |
+
+#### Transacciones
+
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| GET | `/api/transactions` | Lista todas las transacciones. |
+| GET | `/api/transactions/{id}` | Consulta una transacción por ID. |
+| GET | `/api/transactions/account/{accountNumber}` | Consulta el historial de una cuenta. |
+| POST | `/api/transactions` | Realiza una transferencia. |
+| PUT | `/api/transactions/{id}` | Actualiza una transferencia y ajusta los saldos. |
+| DELETE | `/api/transactions/{id}` | Elimina una transferencia y revierte sus saldos. |
+
+### 4. Desarrollo del frontend
+
+El frontend contiene tres vistas principales:
+
+1. **Clientes:** consulta la lista, crea clientes, edita sus datos y permite eliminarlos.
+2. **Transferencias:** permite seleccionar las cuentas de origen y destino e indicar el monto.
+3. **Historial:** muestra los movimientos de una cuenta, indicando si corresponden a una entrada o una salida.
+
+### 5. Ejecución local
+
+Con MySQL iniciado, el backend se ejecuta desde la raíz del proyecto con:
 
 ```bash
-export DB_PASSWORD='tu_contrasena'
-```
-
-En PowerShell:
-
-```powershell
-$env:DB_PASSWORD = 'tu_contrasena'
-```
-
-Hibernate crea o actualiza automáticamente las tablas al iniciar la aplicación porque `spring.jpa.hibernate.ddl-auto` está configurado como `update`.
-
-## Ejecución local
-
-### 1. Iniciar el backend
-
-Desde la raíz del proyecto:
-
-```bash
+export DB_PASSWORD='contraseña_de_lab_user'
 ./mvnw spring-boot:run
 ```
 
-En Windows:
-
-```powershell
-mvnw.cmd spring-boot:run
-```
-
-La API queda disponible en `http://localhost:8080`.
-
-### 2. Iniciar el frontend
-
-En otra terminal:
+El frontend se ejecuta en otra terminal con:
 
 ```bash
 cd frontend
@@ -126,75 +137,41 @@ npm ci
 npm run dev
 ```
 
-Abre `http://localhost:5173`. Durante el desarrollo, Vite redirige las solicitudes realizadas a `/api` hacia el backend en el puerto `8080`.
+La aplicación queda disponible en `http://localhost:5173` y la API en `http://localhost:8080`.
 
-## API REST
+### 6. Verificación
 
-| Método | Endpoint | Descripción |
-| --- | --- | --- |
-| `GET` | `/api/customers` | Lista todos los clientes. |
-| `GET` | `/api/customers/{id}` | Consulta un cliente por su identificador. |
-| `POST` | `/api/customers` | Crea un cliente. |
-| `POST` | `/api/transactions` | Realiza una transferencia. |
-| `GET` | `/api/transactions/account/{accountNumber}` | Consulta los movimientos de una cuenta. |
-| `GET` | `/api/transactions` | Lista todas las transacciones. |
-| `GET` | `/api/transactions/{id}` | Consulta una transacción por su identificador. |
-| `PUT` | `/api/transactions/{id}` | Actualiza una transferencia y ajusta los saldos involucrados. |
-| `DELETE` | `/api/transactions/{id}` | Elimina una transferencia y revierte sus saldos. |
-
-### Crear un cliente
+Se verificó que el backend compila correctamente. También se ejecutaron satisfactoriamente las validaciones del frontend:
 
 ```bash
-curl -X POST http://localhost:8080/api/customers \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "firstName": "Ana",
-    "lastName": "Gómez",
-    "accountNumber": "10001",
-    "balance": 150000
-  }'
-```
-
-### Realizar una transferencia
-
-Antes de ejecutar este ejemplo deben existir las cuentas `10001` y `10002`.
-
-```bash
-curl -X POST http://localhost:8080/api/transactions \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "senderAccountNumber": "10001",
-    "receiverAccountNumber": "10002",
-    "amount": 25000
-  }'
-```
-
-La transferencia se rechaza cuando falta una cuenta, ambas cuentas son iguales, el monto no es positivo, una cuenta no existe o el remitente no tiene saldo suficiente.
-
-### Consultar movimientos
-
-```bash
-curl http://localhost:8080/api/transactions/10001
-```
-
-## Verificación
-
-Con MySQL en ejecución y `DB_PASSWORD` configurada, ejecuta las pruebas del backend:
-
-```bash
-./mvnw test
-```
-
-Para validar el frontend:
-
-```bash
-cd frontend
 npm run lint
 npm run build
 ```
 
-## Configuración principal
+Además, se probó manualmente la creación de clientes, la realización de transferencias y la consulta del historial desde la interfaz web.
 
-- `src/main/resources/application.properties`: conexión a MySQL, puerto y configuración de JPA.
-- `frontend/vite.config.js`: puerto del frontend y proxy hacia la API.
-- `frontend/src/api/banco.js`: funciones utilizadas por React para consumir el backend.
+## Conclusiones
+
+El laboratorio permitió aplicar los conceptos fundamentales de Spring Boot en una aplicación funcional. Se implementó una API REST con persistencia en MySQL y una interfaz React integrada mediante Axios.
+
+La separación por capas facilita el mantenimiento del sistema y permite separar la presentación, las reglas de negocio y el acceso a datos. El uso de transacciones garantiza que una transferencia actualice los saldos y registre el movimiento de forma consistente.
+
+La aplicación cumple con las funcionalidades solicitadas: gestión completa de clientes, transferencias entre cuentas e historial de movimientos por cliente.
+
+## Bibliografía
+
+- Spring Boot Documentation: <https://docs.spring.io/spring-boot/>
+- Spring Data JPA Documentation: <https://spring.io/projects/spring-data-jpa>
+- Spring Initializr: <https://start.spring.io/>
+- React Documentation: <https://react.dev/>
+- Vite Documentation: <https://vite.dev/>
+- MySQL Documentation: <https://dev.mysql.com/doc/>
+- Maven Documentation: <https://maven.apache.org/guides/>
+- Guía del laboratorio: `Lab1_2026-2_Introduccion_SpringBoot.md`.
+
+## Proyecto anexo en GitHub
+
+Repositorio del proyecto:
+
+<https://github.com/VGEle/banco_lab01_2026>
+
