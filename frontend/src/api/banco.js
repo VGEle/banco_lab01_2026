@@ -21,7 +21,7 @@ export async function transferir(datos) {
 
 export async function consultarHistorial(cuenta) {
     const respuesta = await api.get(
-        `/transactions/${encodeURIComponent(cuenta)}`
+        `/transactions/account/${encodeURIComponent(cuenta)}`
     );
     return respuesta.data;
 }

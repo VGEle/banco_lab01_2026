@@ -4,6 +4,7 @@ import com.udea.lab12026p.dto.CustomerDTO;
 import com.udea.lab12026p.service.CustomerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -31,11 +32,7 @@ public class CustomerController {
 
     // ✅ Crear un nuevo cliente
     @PostMapping
-    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody CustomerDTO customerDTO) {
-        if (customerDTO.getBalance() == null) {
-            throw new IllegalArgumentException("Balance cannot be null");
-        }
-
+    public ResponseEntity<CustomerDTO> createCustomer(@Valid @RequestBody CustomerDTO customerDTO) {
         return ResponseEntity.ok(customerFacade.createCustomer(customerDTO));
     }
 

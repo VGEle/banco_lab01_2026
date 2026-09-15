@@ -1,6 +1,9 @@
 package com.udea.lab12026p.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDateTime;
 
@@ -8,8 +11,12 @@ import java.time.LocalDateTime;
 public class TransactionDTO {
 
     private Long id;
+    @NotBlank(message = "La cuenta de origen es obligatoria")
     private String senderAccountNumber;
+    @NotBlank(message = "La cuenta de destino es obligatoria")
     private String receiverAccountNumber;
+    @NotNull(message = "El monto es obligatorio")
+    @Positive(message = "El monto debe ser positivo")
     private Double amount;
     private LocalDateTime timestamp = LocalDateTime.now();
 

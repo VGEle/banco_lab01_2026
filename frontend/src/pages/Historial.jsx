@@ -32,7 +32,7 @@ export default function Historial() {
         try {
             const data = await consultarHistorial(cuentaSeleccionada);
             setMovimientos(data);
-        } catch (err) {
+        } catch {
             setError('No fue posible consultar el historial.');
         } finally {
             setCargando(false);
