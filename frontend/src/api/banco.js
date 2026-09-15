@@ -14,6 +14,15 @@ export async function crearCliente(datos) {
     return respuesta.data;
 }
 
+export async function actualizarCliente(id, datos) {
+    const respuesta = await api.put(`/customers/${id}`, datos);
+    return respuesta.data;
+}
+
+export async function eliminarCliente(id) {
+    await api.delete(`/customers/${id}`);
+}
+
 export async function transferir(datos) {
     const respuesta = await api.post('/transactions', datos);
     return respuesta.data;
