@@ -172,6 +172,16 @@ Las pruebas automatizadas del backend se ejecutan con:
 
 Estas pruebas utilizan H2 únicamente durante el perfil `test`, por lo que no reemplazan la base MySQL de producción. Actualmente verifican el arranque de Spring, una transferencia exitosa y el rechazo de una transferencia sin saldo suficiente.
 
+### Configuración de SonarCloud
+
+El workflow incluye un trabajo de análisis SonarCloud que se ejecuta después de las pruebas. Para activarlo en GitHub, configura en `Settings > Secrets and variables > Actions`:
+
+- Variable `SONAR_PROJECT_KEY`: clave del proyecto creado en SonarCloud.
+- Variable `SONAR_ORGANIZATION`: clave de la organización de SonarCloud.
+- Secreto `SONAR_TOKEN`: token generado en SonarCloud.
+
+El token no se guarda en el repositorio y el análisis depende del trabajo `tests`, por lo que no se ejecuta si las pruebas fallan.
+
 Además, se probó manualmente la creación de clientes, la realización de transferencias y la consulta del historial desde la interfaz web.
 
 ## Conclusiones
