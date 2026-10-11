@@ -1,4 +1,14 @@
-# Informe de Laboratorio 1: Introducción a Spring Boot
+# Laboratorio 2: Implementación de CI/CD
+
+[![CI/CD Pipeline](https://github.com/VGEle/banco_lab01_2026/actions/workflows/build.yml/badge.svg?branch=laboratorio-2)](https://github.com/VGEle/banco_lab01_2026/actions/workflows/build.yml?query=branch%3Alaboratorio-2)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=VGEle_banco_lab01_2026&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=VGEle_banco_lab01_2026)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=VGEle_banco_lab01_2026&metric=coverage)](https://sonarcloud.io/summary/new_code?id=VGEle_banco_lab01_2026)
+
+Este laboratorio toma como aplicación base el proyecto bancario desarrollado en el Laboratorio 1 y le incorpora un entorno de integración y entrega continuas (CI/CD) mediante GitHub Actions y herramientas de calidad, cobertura, seguridad y despliegue.
+
+La primera parte del laboratorio agrega endpoints de demostración con Java Faker para validar el funcionamiento del backend y del pipeline antes de automatizar las siguientes etapas.
+
+## Aplicación base: Laboratorio 1
 
 ## Introducción
 
@@ -139,6 +149,16 @@ npm run dev
 
 La aplicación queda disponible en `http://localhost:5173` y la API en `http://localhost:8080`.
 
+### Endpoints de datos aleatorios del Lab 2
+
+El Lab 2 incorpora endpoints de demostración generados con Java Faker:
+
+- `GET /` — verificación de estado.
+- `GET /version` — versión de la aplicación.
+- `GET /nations` — diez naciones aleatorias.
+- `GET /currencies` — veinte monedas aleatorias.
+- `GET /aviation` — veinte registros de aviación aleatorios.
+
 ### 6. Verificación
 
 Se verificó que el backend compila correctamente. También se ejecutaron satisfactoriamente las validaciones del frontend:
@@ -155,6 +175,26 @@ Las pruebas automatizadas del backend se ejecutan con:
 ```
 
 Estas pruebas utilizan H2 únicamente durante el perfil `test`, por lo que no reemplazan la base MySQL de producción. Actualmente verifican el arranque de Spring, una transferencia exitosa y el rechazo de una transferencia sin saldo suficiente.
+
+### Configuración de SonarCloud
+
+El workflow incluye un trabajo de análisis SonarCloud que se ejecuta después de las pruebas. Para activarlo en GitHub, configura en `Settings > Secrets and variables > Actions`:
+
+- Variable `SONAR_PROJECT_KEY`: clave del proyecto creado en SonarCloud.
+- Variable `SONAR_ORGANIZATION`: clave de la organización de SonarCloud.
+- Secreto `SONAR_TOKEN`: token generado en SonarCloud.
+
+El token no se guarda en el repositorio y el análisis depende del trabajo `tests`, por lo que no se ejecuta si las pruebas fallan.
+
+### Cobertura de código con JaCoCo
+
+Maven genera el reporte XML de cobertura en `target/site/jacoco/jacoco.xml`. El trabajo de SonarCloud utiliza este archivo para mostrar la cobertura del código analizado.
+
+Para generar el reporte localmente:
+
+```bash
+./mvnw clean test
+```
 
 Además, se probó manualmente la creación de clientes, la realización de transferencias y la consulta del historial desde la interfaz web.
 
