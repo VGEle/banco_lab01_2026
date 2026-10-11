@@ -1,5 +1,9 @@
 # Laboratorio 2: Implementación de CI/CD
 
+[![CI/CD Pipeline](https://github.com/VGEle/banco_lab01_2026/actions/workflows/build.yml/badge.svg?branch=laboratorio-2)](https://github.com/VGEle/banco_lab01_2026/actions/workflows/build.yml?query=branch%3Alaboratorio-2)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=VGEle_banco_lab01_2026&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=VGEle_banco_lab01_2026)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=VGEle_banco_lab01_2026&metric=coverage)](https://sonarcloud.io/summary/new_code?id=VGEle_banco_lab01_2026)
+
 Este laboratorio toma como aplicación base el proyecto bancario desarrollado en el Laboratorio 1 y le incorpora un entorno de integración y entrega continuas (CI/CD) mediante GitHub Actions y herramientas de calidad, cobertura, seguridad y despliegue.
 
 La primera parte del laboratorio agrega endpoints de demostración con Java Faker para validar el funcionamiento del backend y del pipeline antes de automatizar las siguientes etapas.
