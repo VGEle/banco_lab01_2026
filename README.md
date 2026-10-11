@@ -148,6 +148,14 @@ npm run lint
 npm run build
 ```
 
+Las pruebas automatizadas del backend se ejecutan con:
+
+```bash
+./mvnw test
+```
+
+Estas pruebas utilizan H2 únicamente durante el perfil `test`, por lo que no reemplazan la base MySQL de producción. Actualmente verifican el arranque de Spring, una transferencia exitosa y el rechazo de una transferencia sin saldo suficiente.
+
 Además, se probó manualmente la creación de clientes, la realización de transferencias y la consulta del historial desde la interfaz web.
 
 ## Conclusiones

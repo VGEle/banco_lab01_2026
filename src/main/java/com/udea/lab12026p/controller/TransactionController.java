@@ -27,41 +27,24 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<?> transferMoney(@Valid @RequestBody TransactionDTO transactionDTO) {
-        try {
-            TransactionDTO savedTransaction = transactionService.transferMoney(transactionDTO);
-            return ResponseEntity.ok(savedTransaction);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<TransactionDTO> transferMoney(@Valid @RequestBody TransactionDTO transactionDTO) {
+        return ResponseEntity.ok(transactionService.transferMoney(transactionDTO));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTransactionById(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(transactionService.getTransactionById(id));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<TransactionDTO> getTransactionById(@PathVariable Long id) {
+        return ResponseEntity.ok(transactionService.getTransactionById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTransaction(@PathVariable Long id,
-                                               @Valid @RequestBody TransactionDTO transactionDTO) {
-        try {
-            return ResponseEntity.ok(transactionService.updateTransaction(id, transactionDTO));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<TransactionDTO> updateTransaction(@PathVariable Long id,
+                                                            @Valid @RequestBody TransactionDTO transactionDTO) {
+        return ResponseEntity.ok(transactionService.updateTransaction(id, transactionDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTransaction(@PathVariable Long id) {
-        try {
-            transactionService.deleteTransaction(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
+        transactionService.deleteTransaction(id);
+        return ResponseEntity.noContent().build();
     }
 }

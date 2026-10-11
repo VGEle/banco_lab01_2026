@@ -2,6 +2,7 @@ package com.udea.lab12026p.service;
 
 import com.udea.lab12026p.dto.CustomerDTO;
 import com.udea.lab12026p.entity.Customer;
+import com.udea.lab12026p.exception.ResourceNotFoundException;
 import com.udea.lab12026p.mapper.CustomerMapper;
 import com.udea.lab12026p.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class CustomerService {
     }
     public CustomerDTO getCustomerById(Long id) {
         return customerRepository.findById(id).map(customerMapper::toDTO)
-                .orElseThrow(()-> new RuntimeException("Cliente no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado."));
     }
 
     public CustomerDTO createCustomer(CustomerDTO customerDTO) {
@@ -36,7 +37,7 @@ public class CustomerService {
 
     public CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado."));
 
         customer.setFirstName(customerDTO.getFirstName());
         customer.setLastName(customerDTO.getLastName());
@@ -48,7 +49,7 @@ public class CustomerService {
 
     public void deleteCustomer(Long id) {
         if (!customerRepository.existsById(id)) {
-            throw new IllegalArgumentException("Cliente no encontrado");
+            throw new ResourceNotFoundException("Cliente no encontrado.");
         }
         customerRepository.deleteById(id);
     }

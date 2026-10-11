@@ -37,23 +37,15 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCustomer(@PathVariable Long id,
-                                            @Valid @RequestBody CustomerDTO customerDTO) {
-        try {
-            return ResponseEntity.ok(customerFacade.updateCustomer(id, customerDTO));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable Long id,
+                                                     @Valid @RequestBody CustomerDTO customerDTO) {
+        return ResponseEntity.ok(customerFacade.updateCustomer(id, customerDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCustomer(@PathVariable Long id) {
-        try {
-            customerFacade.deleteCustomer(id);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
+        customerFacade.deleteCustomer(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
