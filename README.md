@@ -200,6 +200,10 @@ Para generar el reporte localmente:
 
 Después de las pruebas y del análisis de calidad, GitHub Actions construye el archivo `lab12026p-0.0.1-SNAPSHOT.jar` y lo publica como artefacto descargable del workflow.
 
+### Publicación de la imagen Docker
+
+Después de construir el JAR, GitHub Actions construye y publica la imagen `banco-lab01-2026:latest` en Docker Hub. El repositorio requiere los secretos `DOCKER_USERNAME` y `DOCKER_PASSWORD` en `Settings > Secrets and variables > Actions`.
+
 Además, se probó manualmente la creación de clientes, la realización de transferencias y la consulta del historial desde la interfaz web.
 
 ## Conclusiones
