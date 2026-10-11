@@ -182,6 +182,16 @@ El workflow incluye un trabajo de análisis SonarCloud que se ejecuta después d
 
 El token no se guarda en el repositorio y el análisis depende del trabajo `tests`, por lo que no se ejecuta si las pruebas fallan.
 
+### Cobertura de código con JaCoCo
+
+Maven genera el reporte XML de cobertura en `target/site/jacoco/jacoco.xml`. El trabajo de SonarCloud utiliza este archivo para mostrar la cobertura del código analizado.
+
+Para generar el reporte localmente:
+
+```bash
+./mvnw clean test
+```
+
 Además, se probó manualmente la creación de clientes, la realización de transferencias y la consulta del historial desde la interfaz web.
 
 ## Conclusiones
