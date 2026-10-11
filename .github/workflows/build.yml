@@ -69,3 +69,32 @@ jobs:
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
           -Dsonar.token="$SONAR_TOKEN"
+
+  build:
+    name: Build JAR
+    needs: sonar
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Make Maven Wrapper executable
+        run: chmod +x mvnw
+
+      - name: Build application JAR
+        run: ./mvnw -B package -DskipTests
+
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lab12026p-jar
+          path: target/lab12026p-0.0.1-SNAPSHOT.jar
+          if-no-files-found: error

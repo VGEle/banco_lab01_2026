@@ -196,6 +196,10 @@ Para generar el reporte localmente:
 ./mvnw clean test
 ```
 
+### Artefacto JAR
+
+Después de las pruebas y del análisis de calidad, GitHub Actions construye el archivo `lab12026p-0.0.1-SNAPSHOT.jar` y lo publica como artefacto descargable del workflow.
+
 Además, se probó manualmente la creación de clientes, la realización de transferencias y la consulta del historial desde la interfaz web.
 
 ## Conclusiones
