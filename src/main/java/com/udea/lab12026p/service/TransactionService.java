@@ -3,6 +3,7 @@ package com.udea.lab12026p.service;
 import com.udea.lab12026p.dto.TransactionDTO;
 import com.udea.lab12026p.entity.Customer;
 import com.udea.lab12026p.entity.Transaction;
+import com.udea.lab12026p.exception.ResourceNotFoundException;
 import com.udea.lab12026p.repository.CustomerRepository;
 import com.udea.lab12026p.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,14 +75,14 @@ public class TransactionService {
     @Transactional(readOnly = true)
     public TransactionDTO getTransactionById(Long id) {
         return transactionRepository.findById(id).map(this::toDTO)
-                .orElseThrow(() -> new IllegalArgumentException("Transacción no encontrada."));
+                .orElseThrow(() -> new ResourceNotFoundException("Transacción no encontrada."));
     }
 
     @Transactional
     public TransactionDTO updateTransaction(Long id, TransactionDTO request) {
         validateTransfer(request);
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Transacción no encontrada."));
+                .orElseThrow(() -> new ResourceNotFoundException("Transacción no encontrada."));
 
         Customer oldSender = getCustomer(transaction.getSenderAccountNumber());
         Customer oldReceiver = getCustomer(transaction.getReceiverAccountNumber());
@@ -113,7 +114,7 @@ public class TransactionService {
     @Transactional
     public void deleteTransaction(Long id) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Transacción no encontrada."));
+                .orElseThrow(() -> new ResourceNotFoundException("Transacción no encontrada."));
         Customer sender = getCustomer(transaction.getSenderAccountNumber());
         Customer receiver = getCustomer(transaction.getReceiverAccountNumber());
         if (receiver.getBalance() < transaction.getAmount()) {
