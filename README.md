@@ -1,4 +1,10 @@
-# Informe de Laboratorio 1: Introducción a Spring Boot
+# Laboratorio 2: Implementación de CI/CD
+
+Este laboratorio toma como aplicación base el proyecto bancario desarrollado en el Laboratorio 1 y le incorpora un entorno de integración y entrega continuas (CI/CD) mediante GitHub Actions y herramientas de calidad, cobertura, seguridad y despliegue.
+
+La primera parte del laboratorio agrega endpoints de demostración con Java Faker para validar el funcionamiento del backend y del pipeline antes de automatizar las siguientes etapas.
+
+## Aplicación base: Laboratorio 1
 
 ## Introducción
 
