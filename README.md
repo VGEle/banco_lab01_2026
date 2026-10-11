@@ -139,6 +139,16 @@ npm run dev
 
 La aplicación queda disponible en `http://localhost:5173` y la API en `http://localhost:8080`.
 
+### Endpoints de datos aleatorios del Lab 2
+
+El Lab 2 incorpora endpoints de demostración generados con Java Faker:
+
+- `GET /` — verificación de estado.
+- `GET /version` — versión de la aplicación.
+- `GET /nations` — diez naciones aleatorias.
+- `GET /currencies` — veinte monedas aleatorias.
+- `GET /aviation` — veinte registros de aviación aleatorios.
+
 ### 6. Verificación
 
 Se verificó que el backend compila correctamente. También se ejecutaron satisfactoriamente las validaciones del frontend:
