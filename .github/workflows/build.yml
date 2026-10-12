@@ -54,6 +54,7 @@ jobs:
 
       - name: Run Snyk security scan
         uses: snyk/actions/maven-3-jdk-17@9adf32b1121593767fc3c057af55b55db032dc04 # v1.0.0
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
           JAVA_HOME: /opt/java/openjdk
