@@ -147,3 +147,16 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/banco-lab01-2026:latest
+
+  railway:
+    name: Deploy to Railway
+    needs: docker
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    container: ghcr.io/railwayapp/cli:latest
+
+    steps:
+      - name: Redeploy Railway service
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway redeploy --service awake-radiance --yes
