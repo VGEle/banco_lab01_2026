@@ -37,7 +37,7 @@ Desarrollar una aplicación web full stack que simule las operaciones básicas d
 
 - IntelliJ IDEA para el desarrollo del backend.
 - Visual Studio Code para el desarrollo del frontend.
-- Java 17 y Spring Boot 3.5.11.
+- Java 17 y Spring Boot 3.5.14.
 - Maven Wrapper para la construcción y ejecución del backend.
 - Spring Web para la creación de la API REST.
 - Spring Data JPA e Hibernate para la persistencia.
@@ -214,6 +214,58 @@ El workflow ejecuta un análisis de las dependencias Maven con Snyk y reporta vu
 - Secreto `SNYK_TOKEN`: token de autenticación de Snyk.
 
 El token se utiliza únicamente desde GitHub Actions y no se guarda en el repositorio.
+
+El análisis de Snyk está configurado con `continue-on-error: true`. Esto permite que el pipeline informe las vulnerabilidades encontradas sin impedir la construcción y el despliegue de la aplicación.
+
+### Flujo CI/CD completo
+
+El archivo `.github/workflows/build.yml` contiene las siguientes etapas:
+
+1. Ejecutar las pruebas unitarias con Maven.
+2. Analizar la calidad y cobertura del código con SonarCloud.
+3. Analizar las dependencias con Snyk.
+4. Construir el archivo JAR.
+5. Construir y publicar la imagen Docker en Docker Hub.
+6. Ejecutar el despliegue automático en Railway mediante Railway CLI.
+
+Los trabajos de publicación y despliegue se ejecutan en eventos `push`. En Pull Requests se ejecutan las validaciones, pero no se publican imágenes ni se despliega la aplicación.
+
+### Imagen Docker
+
+La imagen pública utilizada para desplegar la aplicación es:
+
+```text
+elenavg26/banco-lab01-2026:latest
+```
+
+Repositorio en Docker Hub:
+
+<https://hub.docker.com/r/elenavg26/banco-lab01-2026>
+
+### Despliegue en Railway
+
+La aplicación se despliega en Railway a partir de la imagen Docker publicada en Docker Hub. El servicio utiliza el puerto `8080` y está conectado a un servicio MySQL administrado por Railway.
+
+URL pública de la aplicación:
+
+<https://awake-radiance-production.up.railway.app>
+
+Las variables de conexión se configuran en Railway mediante referencias al servicio MySQL:
+
+```text
+SERVER_PORT=8080
+DB_PASSWORD=${{MySQL.MYSQLPASSWORD}}
+SPRING_DATASOURCE_USERNAME=${{MySQL.MYSQLUSER}}
+SPRING_DATASOURCE_URL=jdbc:mysql://${{MySQL.MYSQLHOST}}:${{MySQL.MYSQLPORT}}/${{MySQL.MYSQLDATABASE}}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+```
+
+El despliegue automático se activa desde GitHub Actions mediante el secreto `RAILWAY_TOKEN`. Este secreto permite ejecutar:
+
+```bash
+railway redeploy --service awake-radiance --yes
+```
+
+Las credenciales y tokens se mantienen únicamente en los secretos de GitHub y no se almacenan en el repositorio.
 
 ## Conclusiones
 
