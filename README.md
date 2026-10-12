@@ -3,6 +3,7 @@
 [![CI/CD Pipeline](https://github.com/VGEle/banco_lab01_2026/actions/workflows/build.yml/badge.svg?branch=laboratorio-2)](https://github.com/VGEle/banco_lab01_2026/actions/workflows/build.yml?query=branch%3Alaboratorio-2)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=VGEle_banco_lab01_2026&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=VGEle_banco_lab01_2026)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=VGEle_banco_lab01_2026&metric=coverage)](https://sonarcloud.io/summary/new_code?id=VGEle_banco_lab01_2026)
+[![Known Vulnerabilities](https://snyk.io/test/github/VGEle/banco_lab01_2026/badge.svg)](https://snyk.io/test/github/VGEle/banco_lab01_2026)
 
 Este laboratorio toma como aplicación base el proyecto bancario desarrollado en el Laboratorio 1 y le incorpora un entorno de integración y entrega continuas (CI/CD) mediante GitHub Actions y herramientas de calidad, cobertura, seguridad y despliegue.
 
@@ -205,6 +206,14 @@ Después de las pruebas y del análisis de calidad, GitHub Actions construye el 
 Después de construir el JAR, GitHub Actions construye y publica la imagen `banco-lab01-2026:latest` en Docker Hub. El repositorio requiere los secretos `DOCKER_USERNAME` y `DOCKER_PASSWORD` en `Settings > Secrets and variables > Actions`.
 
 Además, se probó manualmente la creación de clientes, la realización de transferencias y la consulta del historial desde la interfaz web.
+
+### Análisis de seguridad con Snyk
+
+El workflow ejecuta un análisis de las dependencias Maven con Snyk y reporta vulnerabilidades de severidad alta o crítica. Para activarlo en GitHub, genera un token en [Snyk](https://snyk.io/) y agrégalo en `Settings > Secrets and variables > Actions` con el nombre:
+
+- Secreto `SNYK_TOKEN`: token de autenticación de Snyk.
+
+El token se utiliza únicamente desde GitHub Actions y no se guarda en el repositorio.
 
 ## Conclusiones
 
